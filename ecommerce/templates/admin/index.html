@@ -1,0 +1,123 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static "admin/css/dashboard.css" %}">
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main" class="dashboard-grid">
+    <!-- 1. Statistics Cards -->
+    <div class="metrics-grid">
+        <!-- Revenue/Sales Volume Card -->
+        <div class="metric-card" id="metric-revenue">
+            <div class="metric-card-header">
+                <span class="metric-label">Sales Volume (Page)</span>
+                <span class="metric-icon-wrapper revenue">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </span>
+            </div>
+            <div class="metric-value shimmer" id="val-revenue">₹0.00</div>
+            <div class="metric-trend success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                <span>Live computed</span>
+            </div>
+        </div>
+
+        <!-- Orders Card -->
+        <div class="metric-card" id="metric-orders">
+            <div class="metric-card-header">
+                <span class="metric-label">Total Orders</span>
+                <span class="metric-icon-wrapper orders">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                </span>
+            </div>
+            <div class="metric-value shimmer" id="val-orders">--</div>
+            <div class="metric-trend info" id="val-orders-sub">
+                <span>Fetching count...</span>
+            </div>
+        </div>
+
+        <!-- Products Card -->
+        <div class="metric-card" id="metric-products">
+            <div class="metric-card-header">
+                <span class="metric-label">Products Active</span>
+                <span class="metric-icon-wrapper products">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </span>
+            </div>
+            <div class="metric-value shimmer" id="val-products">--</div>
+            <div class="metric-trend info" id="val-products-sub">
+                <span>Checking catalog...</span>
+            </div>
+        </div>
+
+        <!-- Reviews Card -->
+        <div class="metric-card" id="metric-reviews">
+            <div class="metric-card-header">
+                <span class="metric-label">Product Reviews</span>
+                <span class="metric-icon-wrapper reviews">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </span>
+            </div>
+            <div class="metric-value shimmer" id="val-reviews">--</div>
+            <div class="metric-trend warning" id="val-reviews-sub">
+                <span>Checking reviews...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Quick Actions Section -->
+    <div class="quick-actions-section">
+        <h3 class="section-title">Quick Actions</h3>
+        <div class="quick-actions-grid">
+            <a href="/admin/store/product/add/" class="quick-action-card">
+                <span class="action-icon add-product-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </span>
+                <div class="action-details">
+                    <span class="action-name">Add Product</span>
+                    <span class="action-desc">Add a new item to catalog</span>
+                </div>
+            </a>
+            
+            <a href="/admin/store/order/" class="quick-action-card">
+                <span class="action-icon view-orders-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                </span>
+                <div class="action-details">
+                    <span class="action-name">Manage Orders</span>
+                    <span class="action-desc">Fulfill pending orders</span>
+                </div>
+            </a>
+            
+            <a href="/admin/store/coupon/add/" class="quick-action-card">
+                <span class="action-icon create-coupon-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                </span>
+                <div class="action-details">
+                    <span class="action-name">Create Coupon</span>
+                    <span class="action-desc">Generate new discount code</span>
+                </div>
+            </a>
+            
+            <a href="/admin/store/review/" class="quick-action-card">
+                <span class="action-icon moderate-reviews-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </span>
+                <div class="action-details">
+                    <span class="action-name">Moderate Reviews</span>
+                    <span class="action-desc">Approve customer feedback</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

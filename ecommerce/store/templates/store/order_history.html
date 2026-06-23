@@ -1,0 +1,252 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Order History - EcomHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+        
+        /* Status Colors */
+        --status-pending: #f59e0b;
+        --status-processing: #3b82f6;
+        --status-shipped: #8b5cf6;
+        --status-delivered: #10b981;
+        --status-cancelled: #ef4444;
+    }
+
+    .neon-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .neon-title::before {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 35px;
+        background: var(--gradient-primary);
+        border-radius: 10px;
+    }
+
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+        border-color: rgba(0, 242, 254, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transform: translateY(-3px);
+    }
+
+    /* Order Header Elements */
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-glass);
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .order-number {
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--neon-cyan);
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .order-date {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .status-pending { background: rgba(245, 158, 11, 0.1); color: var(--status-pending); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .status-processing { background: rgba(59, 130, 246, 0.1); color: var(--status-processing); border: 1px solid rgba(59, 130, 246, 0.3); }
+    .status-shipped { background: rgba(139, 92, 246, 0.1); color: var(--status-shipped); border: 1px solid rgba(139, 92, 246, 0.3); }
+    .status-delivered { background: rgba(16, 185, 129, 0.1); color: var(--status-delivered); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-cancelled { background: rgba(239, 68, 68, 0.1); color: var(--status-cancelled); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    /* Order Details */
+    .order-details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        align-items: center;
+    }
+
+    .detail-label {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    /* Action Buttons */
+    .btn-outline-glow {
+        background: transparent;
+        color: white;
+        border: 1px solid var(--border-glass);
+        padding: 0.6rem 1.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        font-weight: 600;
+    }
+
+    .btn-outline-glow:hover {
+        background: var(--gradient-primary);
+        border-color: transparent;
+        color: white;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    }
+
+    /* Pagination (Glass styled) */
+    .glass-pagination .page-link {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-glass);
+        color: white;
+        margin: 0 5px;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+    .glass-pagination .page-link:hover {
+        background: rgba(0, 242, 254, 0.1);
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+    }
+
+    .glass-pagination .active .page-link {
+        background: var(--gradient-primary);
+        border-color: transparent;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 900px;">
+    
+    <h1 class="neon-title">Order History</h1>
+
+    {% if page_obj %}
+        {% for order in page_obj %}
+            <div class="glass-card">
+                
+                <div class="order-header">
+                    <div>
+                        <div class="order-number">{{ order.order_number }}</div>
+                        <div class="order-date">Placed on {{ order.created_at|date:"M d, Y, h:i A" }}</div>
+                    </div>
+                    <div>
+                        <span class="status-badge 
+                            {% if order.status == 'pending' %}status-pending
+                            {% elif order.status == 'processing' %}status-processing
+                            {% elif order.status == 'shipped' %}status-shipped
+                            {% elif order.status == 'delivered' %}status-delivered
+                            {% elif order.status == 'cancelled' %}status-cancelled{% endif %}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="order-details-grid">
+                    <div>
+                        <div class="detail-label">Total Amount</div>
+                        <div class="detail-value">₹{{ order.total_amount }}</div>
+                    </div>
+                    <div>
+                        <div class="detail-label">Items</div>
+                        <div class="detail-value">{{ order.items.count }} item(s)</div>
+                    </div>
+                    <div class="text-md-end mt-3 mt-md-0 d-flex gap-2 justify-content-md-end">
+                        <a href="{% url 'order_detail' order.id %}" class="btn-outline-glow">
+                            <i class="fas fa-eye me-2"></i> View Details
+                        </a>
+                        {% if order.payment_status == 'completed' %}
+                        <a href="{% url 'order_confirmation' order.id %}" class="btn-outline-glow" title="View Receipt">
+                            <i class="fas fa-receipt"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        {% endfor %}
+
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Order pagination" class="mt-5">
+            <ul class="pagination justify-content-center glass-pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% endif %}
+
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="glass-card empty-state">
+            <i class="fas fa-box-open mb-4" style="font-size: 4rem; color: rgba(255,255,255,0.1);"></i>
+            <h3 class="text-white mb-3">You haven't placed any orders yet.</h3>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">When you purchase items, your receipts and tracking info will appear here.</p>
+            <a href="{% url 'product_list' %}" class="btn-outline-glow" style="background: var(--gradient-primary); border: none;">
+                Start Shopping <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

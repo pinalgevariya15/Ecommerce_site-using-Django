@@ -1,0 +1,321 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Order {{ order.order_number }} - EcomHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+        
+        /* Status Colors */
+        --status-pending: #f59e0b;
+        --status-processing: #3b82f6;
+        --status-shipped: #8b5cf6;
+        --status-delivered: #10b981;
+        --status-cancelled: #ef4444;
+    }
+
+    .neon-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .neon-title::before {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 30px;
+        background: var(--gradient-primary);
+        border-radius: 10px;
+    }
+
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .status-pending { background: rgba(245, 158, 11, 0.1); color: var(--status-pending); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .status-processing { background: rgba(59, 130, 246, 0.1); color: var(--status-processing); border: 1px solid rgba(59, 130, 246, 0.3); }
+    .status-shipped { background: rgba(139, 92, 246, 0.1); color: var(--status-shipped); border: 1px solid rgba(139, 92, 246, 0.3); }
+    .status-delivered { background: rgba(16, 185, 129, 0.1); color: var(--status-delivered); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-cancelled { background: rgba(239, 68, 68, 0.1); color: var(--status-cancelled); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    /* Item List */
+    .order-item-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid var(--border-glass);
+    }
+
+    .order-item-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .item-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid var(--border-glass);
+    }
+
+    /* Summary Details */
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        color: var(--text-muted);
+    }
+
+    .summary-row span:last-child {
+        color: white;
+        font-weight: 600;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px dashed rgba(255, 255, 255, 0.1);
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+    }
+
+    /* Address Box */
+    .address-box {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border-glass);
+        border-radius: 12px;
+        padding: 1.5rem;
+        height: 100%;
+    }
+
+    .address-title {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+    }
+
+    /* Buttons */
+    .btn-outline-glow {
+        background: transparent;
+        color: var(--neon-cyan);
+        border: 1px solid var(--neon-cyan);
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        font-weight: 600;
+    }
+
+    .btn-outline-glow:hover {
+        background: rgba(0, 242, 254, 0.1);
+        color: white;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <div class="mb-4">
+        <a href="{% url 'order_history' %}" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s;">
+            <i class="fas fa-arrow-left me-2"></i> Back to Order History
+        </a>
+    </div>
+
+    <div class="glass-card d-flex flex-wrap justify-content-between align-items-center gap-4">
+        <div>
+            <h1 class="neon-title mb-1">Order Details</h1>
+            <div style="font-family: 'Courier New', Courier, monospace; color: var(--text-muted); font-size: 1.1rem;">
+                {{ order.order_number }}
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                Placed on {{ order.created_at|date:"F d, Y \a\t h:i A" }}
+            </div>
+        </div>
+        
+        <div class="d-flex flex-column flex-sm-row gap-3">
+            <span class="status-badge 
+                {% if order.payment_status == 'completed' %}status-delivered
+                {% elif order.payment_status == 'pending' %}status-pending
+                {% else %}status-cancelled{% endif %}">
+                <i class="fas {% if order.payment_status == 'completed' %}fa-check-circle{% else %}fa-clock{% endif %}"></i>
+                Payment: {{ order.get_payment_status_display }}
+            </span>
+
+            <span class="status-badge 
+                {% if order.status == 'pending' %}status-pending
+                {% elif order.status == 'processing' %}status-processing
+                {% elif order.status == 'shipped' %}status-shipped
+                {% elif order.status == 'delivered' %}status-delivered
+                {% elif order.status == 'cancelled' %}status-cancelled{% endif %}">
+                <i class="fas fa-box"></i>
+                Order: {{ order.get_status_display }}
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            
+            <div class="glass-card">
+                <h4 class="text-white mb-4" style="font-weight: 700;">Items Ordered</h4>
+                
+                <div class="order-items-container">
+                    {% for item in order.items.all %}
+                        <div class="order-item-row">
+                            <div class="d-flex align-items-center gap-3">
+                                {% if item.product.featured_image %}
+                                    <a href="{% url 'product_detail' item.product.slug %}">
+                                        <img src="{{ item.product.featured_image.url }}" alt="{{ item.product.name }}" class="item-img">
+                                    </a>
+                                {% else %}
+                                    <div class="item-img d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.05);">
+                                        <i class="fas fa-box text-muted fs-4"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div>
+                                    <h6 class="mb-1" style="font-size: 1.1rem; font-weight: 600;">
+                                        <a href="{% url 'product_detail' item.product.slug %}" class="text-decoration-none text-white hover-cyan" style="transition: color 0.2s;">
+                                            {{ item.product.name }}
+                                        </a>
+                                    </h6>
+                                    <small style="color: var(--text-muted);">SKU: {{ item.product.sku }} | Qty: {{ item.quantity }}</small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div style="color: var(--text-muted); font-size: 0.9rem;">₹{{ item.price }} each</div>
+                                <div style="font-weight: 700; color: var(--neon-cyan); font-size: 1.2rem;">₹{{ item.get_total }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="address-box">
+                        <div class="address-title">Shipping Address</div>
+                        <p style="color: white; margin: 0; line-height: 1.8;">
+                            {{ order.shipping_address|linebreaksbr }}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="address-box">
+                        <div class="address-title">Billing Address</div>
+                        <p style="color: white; margin: 0; line-height: 1.8;">
+                            {{ order.billing_address|linebreaksbr }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="glass-card" style="position: sticky; top: 100px;">
+                <h4 class="text-white mb-4" style="font-weight: 700;">Order Summary</h4>
+                
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>₹{{ order.subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>₹{{ order.shipping_cost|floatformat:2 }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax</span>
+                    <span>₹{{ order.tax|floatformat:2 }}</span>
+                </div>
+                
+                <div class="total-row mb-4">
+                    <span>Total</span>
+                    <span style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        ₹{{ order.total_amount|floatformat:2 }}
+                    </span>
+                </div>
+
+                <div class="summary-row mt-4 pt-3 border-top" style="border-color: var(--border-glass) !important;">
+                    <span>Payment Method</span>
+                    <span style="color: var(--neon-cyan);">{{ order.payment_method }}</span>
+                </div>
+
+                <div class="mt-4 pt-2">
+                    {% if order.payment_status == 'completed' %}
+                    <a href="{% url 'order_confirmation' order.id %}" class="btn-outline-glow mb-3">
+                        <i class="fas fa-file-invoice me-2"></i> View Invoice
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'home' %}" class="btn-outline-glow" style="border-color: rgba(255,255,255,0.2); color: white;">
+                        Continue Shopping
+                    </a>
+                </div>
+                <div class="mt-4 pt-2">
+                    {% if order.payment_status == 'completed' %}
+                    <a href="{% url 'order_confirmation' order.id %}" class="btn-outline-glow mb-3">
+                        <i class="fas fa-file-invoice me-2"></i> View Invoice
+                    </a>
+                    {% endif %}
+                    
+                    {% if order.status == 'pending' or order.status == 'processing' %}
+                    <form method="POST" action="{% url 'cancel_order' order.id %}" onsubmit="return confirm('Are you sure you want to cancel this order? This action cannot be undone.');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-outline-glow mb-3" style="border-color: rgba(239, 68, 68, 0.5); color: #ef4444; width: 100%;">
+                            <i class="fas fa-times-circle me-2"></i> Cancel Order
+                        </button>
+                    </form>
+                    {% endif %}
+                    
+        
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Checkout - EcomHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+    }
+
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        border-radius: 24px;
+        padding: 2.5rem;
+    }
+
+    .neon-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .neon-title::before {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 35px;
+        background: var(--gradient-primary);
+        border-radius: 10px;
+    }
+
+    /* Form Styling */
+    .form-group label {
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .glass-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-glass);
+        color: white;
+        padding: 0.8rem 1.2rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .glass-input:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
+    }
+
+    /* Summary Section */
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-glass);
+    }
+
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+
+    .summary-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid var(--border-glass);
+    }
+
+    .total-row {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+        padding-top: 1.5rem;
+        margin-top: 1rem;
+        border-top: 2px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-glow-cyan {
+        background: var(--gradient-primary);
+        color: white !important;
+        border: none;
+        padding: 1.2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        margin-top: 1.5rem;
+    }
+
+    .btn-glow-cyan:hover {
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5">
+        
+        <div class="col-lg-7">
+            <h1 class="neon-title">Checkout Details</h1>
+            <div class="glass-card">
+                <form method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    
+                    <h4 class="text-white mb-4">Shipping Address</h4>
+                    <div class="form-group">
+                        <label for="shipping_address">Full Street Address</label>
+                        <textarea id="shipping_address" name="shipping_address" class="glass-input" rows="3" placeholder="123 Neon Avenue, Cyber City..." required></textarea>
+                    </div>
+
+                    <h4 class="text-white mb-4 mt-4">Billing Extensions</h4>
+                    <div class="form-group">
+                        <label for="billing_address">Billing Address (Leave blank if same as shipping)</label>
+                        <textarea id="billing_address" name="billing_address" class="glass-input" rows="2" placeholder="Suite 404..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Order Notes (Optional)</label>
+                        <textarea id="notes" name="notes" class="glass-input" rows="2" placeholder="Special delivery instructions..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-glow-cyan">
+                        <i class="fas fa-lock me-2"></i> Confirm Order & Proceed to Pay
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="glass-card" style="position: sticky; top: 100px;">
+                <h3 class="text-white mb-4" style="font-weight: 700;">Order Summary</h3>
+                
+                <div style="max-height: 350px; overflow-y: auto; padding-right: 10px; margin-bottom: 1.5rem;">
+                    {% for item in cart.items.all %}
+                        <div class="summary-item">
+                            <div class="d-flex align-items-center gap-3">
+                                {% if item.product.featured_image %}
+                                    <img src="{{ item.product.featured_image.url }}" alt="{{ item.product.name }}" class="summary-img">
+                                {% else %}
+                                    <div class="summary-img d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.05);">
+                                        <i class="fas fa-box text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <h6 class="text-white mb-1">{{ item.product.name|truncatechars:25 }}</h6>
+                                    <small style="color: var(--text-muted);">Qty: {{ item.quantity }}</small>
+                                </div>
+                            </div>
+                            <div class="text-white" style="font-weight: 600;">₹{{ item.get_total_price }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="summary-item pb-2">
+    <span style="color: var(--text-muted);">Subtotal</span>
+    <span class="text-white">₹{{ subtotal|floatformat:2 }}</span>
+</div>
+<div class="summary-item pb-2">
+    <span style="color: var(--text-muted);">Estimated Tax (10%)</span>
+    <span class="text-white">₹{{ tax|floatformat:2 }}</span>
+</div>
+<div class="summary-item pb-2">
+    <span style="color: var(--text-muted);">Shipping</span>
+    <span class="text-white">₹{{ shipping|floatformat:2 }}</span>
+</div>
+
+<div class="summary-item total-row">
+    <span>Total</span>
+    <span style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        ₹{{ grand_total|floatformat:2 }}
+    </span>
+</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

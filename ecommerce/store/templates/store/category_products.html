@@ -1,0 +1,362 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} - EcomHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+    }
+
+    /* Category Banner */
+    .category-banner {
+        position: relative;
+        height: 300px;
+        border-radius: 24px;
+        overflow: hidden;
+        margin-bottom: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-glass);
+    }
+
+    .category-bg {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        z-index: 1;
+        opacity: 0.5;
+    }
+
+    .category-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to top, #050505 10%, transparent 90%);
+        z-index: 2;
+    }
+
+    .category-title-content {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+    }
+
+    .category-title {
+        font-size: 4rem;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    /* Glass Cards (Reused from your theme) */
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 242, 254, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 242, 254, 0.1);
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 2rem;
+    }
+
+    .product-img-wrap {
+        position: relative;
+        padding-top: 100%; 
+        overflow: hidden;
+    }
+
+    .product-img-wrap img {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .glass-card:hover .product-img-wrap img {
+        transform: scale(1.1);
+    }
+
+    .product-details {
+        padding: 1.5rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .product-title {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .product-title:hover {
+        color: var(--neon-cyan);
+    }
+
+    .price-tag {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: white;
+    }
+
+    /* Floating Add to Cart Button */
+    .btn-float-cart {
+        position: absolute;
+        right: 20px;
+        bottom: 25px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    .glass-card:hover .btn-float-cart {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .btn-float-cart:hover {
+        box-shadow: 0 0 20px var(--neon-cyan);
+        transform: scale(1.1) !important;
+    }
+
+    /* Glass Pagination */
+    .glass-pagination .page-link {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-glass);
+        color: white;
+        margin: 0 5px;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+    .glass-pagination .page-link:hover {
+        background: rgba(0, 242, 254, 0.1);
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+    }
+
+    .glass-pagination .active .page-link {
+        background: var(--gradient-primary);
+        border-color: transparent;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="category-banner">
+        {% if category.image %}
+            <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-bg">
+        {% else %}
+            <div class="category-bg" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); opacity: 1;"></div>
+        {% endif %}
+        <div class="category-overlay"></div>
+        
+        <div class="category-title-content">
+            <h1 class="category-title">{{ category.name }}</h1>
+            <p style="color: var(--text-muted); font-size: 1.2rem;">
+                {{ page_obj.paginator.count }} products available
+            </p>
+        </div>
+    </div>
+
+    {% if page_obj %}
+        <div class="product-grid">
+            {% for product in page_obj %}
+                <div class="glass-card">
+                    <a href="{% url 'product_detail' product.slug %}" class="product-img-wrap d-block">
+                        {% if product.featured_image %}
+                            <img src="{{ product.featured_image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop" alt="Placeholder">
+                        {% endif %}
+                        
+                        {% if product.discount_price %}
+                            <div style="position: absolute; top: 15px; left: 15px; background: var(--gradient-primary); color: white; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; z-index: 10;">
+                                -{{ product.discount_percentage }}%
+                            </div>
+                        {% endif %}
+                    </a>
+                    
+                    <div class="product-details">
+                        <a href="{% url 'product_detail' product.slug %}" class="product-title">
+                            {{ product.name|truncatechars:45 }}
+                        </a>
+                        
+                        <div class="mt-3">
+                            {% if product.discount_price %}
+                                <span class="price-tag">₹{{ product.discount_price }}</span>
+                                <span style="color: var(--text-muted); text-decoration: line-through; font-size: 0.9rem; margin-left: 8px;">₹{{ product.price }}</span>
+                            {% else %}
+                                <span class="price-tag">₹{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if product.in_stock %}
+                        <button class="btn-float-cart add-to-cart-btn" data-product-id="{{ product.id }}" title="Add to Cart">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        {% else %}
+                        <button class="btn-float-cart" style="background: rgba(255,255,255,0.1); color: var(--text-muted); cursor: not-allowed;" title="Out of Stock" disabled>
+                            <i class="fas fa-ban"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Product pagination" class="mt-5">
+            <ul class="pagination justify-content-center glass-pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">&laquo;</a></li>
+                {% endif %}
+
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">&raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="glass-card text-center p-5 mx-auto" style="max-width: 600px; margin-top: 2rem;">
+            <i class="fas fa-box-open mb-4" style="font-size: 4rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h3 class="text-white mb-3">No products found</h3>
+            <p style="color: var(--text-muted);">We haven't added any products to the "{{ category.name }}" category yet. Check back soon!</p>
+            <a href="{% url 'home' %}" class="btn text-white mt-3" style="background: var(--gradient-primary); border-radius: 50px; padding: 0.8rem 2rem; font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i> Go Back Home
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+    addToCartBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            
+            // Cool animation
+            this.innerHTML = '<i class="fas fa-check"></i>';
+            this.style.background = '#10b981';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-plus"></i>';
+                this.style.background = 'var(--gradient-primary)';
+            }, 2000);
+            
+            // Send request
+            fetch('{% url "add_to_cart" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ product_id: productId, quantity: 1 })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification(data.message, 'danger');
+                }
+            });
+        });
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function showNotification(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-dismissible fade show position-fixed top-0 end-0 m-4 shadow-lg`;
+    alertDiv.style.zIndex = '9999';
+    alertDiv.style.background = 'rgba(20, 20, 20, 0.85)';
+    alertDiv.style.backdropFilter = 'blur(10px)';
+    alertDiv.style.border = '1px solid rgba(255,255,255,0.1)';
+    alertDiv.style.color = '#fff';
+    alertDiv.style.borderLeft = type === 'success' ? '4px solid var(--neon-cyan)' : '4px solid #ef4444';
+    alertDiv.style.borderRadius = '12px';
+    
+    alertDiv.innerHTML = `
+        <div class="d-flex align-items-center pr-4">
+            <i class="fas ${type === 'success' ? 'fa-check-circle text-info' : 'fa-exclamation-circle text-danger'} me-3"></i>
+            <span style="font-weight: 500;">${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

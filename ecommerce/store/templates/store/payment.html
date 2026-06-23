@@ -1,0 +1,237 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Payment - EcomHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+    }
+
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid var(--border-glass);
+        border-radius: 24px;
+        padding: 2.5rem;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .neon-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    /* Payment Method Toggles */
+    .payment-methods {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 2rem;
+    }
+
+    .payment-method-card {
+        flex: 1;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .payment-method-card input {
+        display: none;
+    }
+
+    .method-content {
+        background: rgba(255, 255, 255, 0.03);
+        border: 2px solid var(--border-glass);
+        border-radius: 12px;
+        padding: 1.2rem;
+        text-align: center;
+        color: var(--text-muted);
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    /* Active State for Toggle */
+    .payment-method-card input:checked + .method-content {
+        border-color: var(--neon-cyan);
+        color: white;
+        background: rgba(0, 242, 254, 0.1);
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+
+    /* Credit Card Visual */
+    .credit-card-mockup {
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .credit-card-mockup::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 25px;
+        width: 45px;
+        height: 35px;
+        background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+        border-radius: 6px;
+        opacity: 0.8;
+    }
+
+    .card-logo {
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        font-size: 2rem;
+        color: rgba(255,255,255,0.8);
+    }
+
+    /* Inputs */
+    .form-group label {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        text-transform: uppercase;
+    }
+
+    .glass-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-glass);
+        color: white;
+        padding: 0.8rem 1.2rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .glass-input:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+    }
+
+    .btn-glow-cyan {
+        background: var(--gradient-primary);
+        color: white !important;
+        border: none;
+        padding: 1.2rem;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1.2rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .btn-glow-cyan:hover {
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <div class="glass-card">
+        <h1 class="neon-title">Payment Method</h1>
+        <p class="text-center mb-4" style="color: var(--text-muted);">Order Total: <strong style="color: white; font-size: 1.2rem;">₹{{ order.total_amount }}</strong></p>
+
+        <form method="POST" action="{% url 'payment' order.id %}">
+            {% csrf_token %}
+            
+            <div class="payment-methods">
+                <label class="payment-method-card">
+                    <input type="radio" name="payment_method" value="card" checked onchange="togglePayment('card')">
+                    <div class="method-content">
+                        <i class="fas fa-credit-card mb-2 d-block" style="font-size: 1.5rem;"></i> Credit Card
+                    </div>
+                </label>
+                <label class="payment-method-card">
+                    <input type="radio" name="payment_method" value="cod" onchange="togglePayment('cod')">
+                    <div class="method-content">
+                        <i class="fas fa-box mb-2 d-block" style="font-size: 1.5rem;"></i> Cash on Delivery
+                    </div>
+                </label>
+            </div>
+
+            <div id="card-details">
+                <div class="credit-card-mockup">
+                    <i class="fab fa-cc-visa card-logo"></i>
+                    <div style="margin-top: 60px; font-family: 'Courier New'; font-size: 1.3rem; color: white; letter-spacing: 3px;">
+                        **** **** **** ****
+                    </div>
+                    <div class="d-flex justify-content-between mt-3" style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">
+                        <span>Card Holder</span>
+                        <span>Valid Thru</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" class="glass-input" placeholder="0000 0000 0000 0000" maxlength="19">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>Expiry Date</label>
+                        <input type="text" class="glass-input" placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="password" class="glass-input" placeholder="***" maxlength="3">
+                    </div>
+                </div>
+            </div>
+
+            <div id="cod-details" style="display: none; text-align: center; padding: 2rem 0;">
+                <div style="font-size: 4rem; color: #10b981; margin-bottom: 1rem;">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h4 style="color: white; font-weight: 700;">Pay at your doorstep</h4>
+                <p style="color: var(--text-muted);">You can pay via Cash or UPI when the delivery agent arrives.</p>
+            </div>
+
+            <button type="submit" class="btn-glow-cyan" id="pay-btn">
+                <i class="fas fa-lock me-2"></i> Pay ₹{{ order.total_amount }}
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePayment(method) {
+        const cardDetails = document.getElementById('card-details');
+        const codDetails = document.getElementById('cod-details');
+        const btn = document.getElementById('pay-btn');
+
+        if (method === 'cod') {
+            cardDetails.style.display = 'none';
+            codDetails.style.display = 'block';
+            btn.innerHTML = '<i class="fas fa-check-circle me-2"></i> Confirm COD Order';
+        } else {
+            cardDetails.style.display = 'block';
+            codDetails.style.display = 'none';
+            btn.innerHTML = '<i class="fas fa-lock me-2"></i> Pay ₹{{ order.total_amount }}';
+        }
+    }
+</script>
+{% endblock %}
