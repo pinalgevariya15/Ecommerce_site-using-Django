@@ -1,0 +1,414 @@
+{% extends 'store/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block title %}Shopping Cart - EcomHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+        --neon-red: #ff2a5f;
+    }
+
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        border-radius: 24px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .neon-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .neon-title::before {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 35px;
+        background: var(--gradient-primary);
+        border-radius: 10px;
+    }
+
+    /* Glass Table Styling */
+    .glass-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .glass-table {
+        width: 100%;
+        color: white;
+        border-collapse: collapse;
+    }
+
+    .glass-table th {
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-glass);
+        letter-spacing: 1px;
+    }
+
+    .glass-table td {
+        padding: 1.5rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        vertical-align: middle;
+    }
+
+    .glass-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .product-img-thumb {
+        width: 80px; 
+        height: 80px; 
+        object-fit: cover; 
+        border-radius: 12px;
+        border: 1px solid var(--border-glass);
+    }
+
+    /* Inputs & Buttons */
+    .glass-input {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-glass);
+        color: white;
+        padding: 0.5rem;
+        border-radius: 8px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .glass-input:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    }
+
+    .glass-input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .btn-glow-cyan {
+        background: var(--gradient-primary);
+        color: white !important;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-glow-cyan:hover {
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-glow {
+        background: transparent;
+        color: white;
+        border: 1px solid var(--border-glass);
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-outline-glow:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+    }
+
+    .btn-icon-danger {
+        background: rgba(255, 8, 68, 0.1);
+        color: var(--neon-red);
+        border: 1px solid rgba(255, 8, 68, 0.2);
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-icon-danger:hover {
+        background: var(--neon-red);
+        color: white;
+        box-shadow: 0 0 15px rgba(255, 42, 95, 0.4);
+    }
+
+    .btn-icon-primary {
+        background: rgba(0, 242, 254, 0.1);
+        color: var(--neon-cyan);
+        border: 1px solid rgba(0, 242, 254, 0.2);
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border-style: none;
+        cursor: pointer;
+    }
+
+    .btn-icon-primary:hover {
+        background: var(--neon-cyan);
+        color: #000;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    }
+
+    /* Summary Details */
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        color: var(--text-muted);
+    }
+
+    .summary-row span:last-child {
+        color: white;
+        font-weight: 600;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px dashed rgba(255, 255, 255, 0.1);
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+    }
+
+    /* Empty State */
+    .empty-cart {
+        text-align: center;
+        padding: 5rem 2rem;
+    }
+
+    .icon-gradient {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Features Section */
+    .feature-box {
+        text-align: center;
+        padding: 2rem;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border-glass);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="neon-title">Shopping Cart</h1>
+    
+    {% if cart.items.all %}
+        <div class="row g-5">
+            <div class="col-lg-8">
+                <div class="glass-card mb-4" style="padding: 1rem 2rem;">
+                    <div class="glass-table-wrapper">
+                        <table class="glass-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-center">Total</th>
+                                    <th class="text-center">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart.items.all %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                {% if item.product.featured_image %}
+                                                    <img src="{{ item.product.featured_image.url }}" alt="{{ item.product.name }}" class="product-img-thumb">
+                                                {% else %}
+                                                    <div class="product-img-thumb d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.05);">
+                                                        <i class="fas fa-box text-muted fs-4"></i>
+                                                    </div>
+                                                {% endif %}
+                                                
+                                                <div>
+                                                    <h6 class="mb-1" style="font-size: 1.1rem; font-weight: 600;">
+                                                        <a href="{% url 'product_detail' item.product.slug %}" class="text-decoration-none text-white hover-cyan" style="transition: color 0.2s;">
+                                                            {{ item.product.name }}
+                                                        </a>
+                                                    </h6>
+                                                    <small style="color: var(--text-muted);">SKU: {{ item.product.sku }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center" style="font-weight: 600;">
+                                            ₹{{ item.product.get_price }}
+                                        </td>
+                                        <td>
+                                            <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-flex align-items-center justify-content-center gap-2">
+                                                {% csrf_token %}
+                                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="glass-input" style="width: 60px;">
+                                                <button type="submit" class="btn-icon-primary" title="Update Quantity">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td class="text-center">
+                                            <span style="font-weight: 700; color: var(--neon-cyan); font-size: 1.1rem;">
+                                                ₹{{ item.get_total_price }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{% url 'remove_from_cart' item.id %}" class="btn-icon-danger" onclick="return confirm('Remove this item from cart?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'product_list' %}" class="btn-outline-glow">
+                        <i class="fas fa-arrow-left me-2"></i> Continue Shopping
+                    </a>
+                    <a href="{% url 'clear_cart' %}" class="btn-outline-glow text-danger" style="border-color: rgba(255, 8, 68, 0.3);" onclick="return confirm('Are you sure you want to clear your entire cart?')">
+                        <i class="fas fa-times me-2"></i> Clear Cart
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="glass-card" style="position: sticky; top: 100px;">
+                    <h4 class="text-white mb-4" style="font-weight: 700;">Order Summary</h4>
+                    
+                    <div class="summary-item pb-2">
+    <span style="color: var(--text-muted);">Subtotal</span>
+    <span class="text-white">₹{{ subtotal|floatformat:2 }}</span>
+</div>
+<div class="summary-item pb-2">
+    <span style="color: var(--text-muted);">Estimated Tax (10%)</span>
+    <span class="text-white">₹{{ tax|floatformat:2 }}</span>
+</div>
+<div class="summary-item pb-2">
+    <span style="color: var(--text-muted);">Shipping</span>
+    <span class="text-white">₹{{ shipping|floatformat:2 }}</span>
+</div>
+
+<div class="summary-item total-row">
+    <span>Total</span>
+    <span style=" padding: 10px; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        ₹{{ grand_total|floatformat:2 }}
+    </span>
+</div>
+
+                    <a href="{% url 'checkout' %}" class="btn-glow-cyan w-100 btn-lg mb-4">
+                        <i class="fas fa-lock me-2"></i> Proceed to Checkout
+                    </a>
+                    
+                    <div class="mt-2 pt-4" style="border-top: 1px solid var(--border-glass);">
+                        <h6 style="color: white; margin-bottom: 1rem; font-weight: 600;">Promo Code</h6>
+                        <form method="post" class="d-flex gap-2">
+                            {% csrf_token %}
+                            <input type="text" name="coupon" class="glass-input flex-grow-1" placeholder="Enter code" required style="text-align: left;">
+                            <button type="submit" class="btn-outline-glow" style="padding: 0.5rem 1rem;">Apply</button>
+                        </form>
+                    </div>
+                    
+                    <div class="mt-4 p-3 rounded" style="background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.2); font-size: 0.85rem; color: var(--text-muted);">
+                        <i class="fas fa-info-circle me-2" style="color: var(--neon-cyan);"></i>
+                        Free shipping applies to orders over ₹500 automatically at checkout.
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="glass-card empty-cart">
+                    <i class="fas fa-shopping-cart icon-gradient mb-4" style="font-size: 5rem;"></i>
+                    <h2 class="text-white mb-3" style="font-weight: 800;">Your cart is empty</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem;">
+                        Looks like you haven't added any premium gear to your cart yet.
+                    </p>
+                    <a href="{% url 'product_list' %}" class="btn-glow-cyan" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+                        Start Shopping <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<section class="py-5 mt-4">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="fas fa-shield-alt icon-gradient mb-3" style="font-size: 2.5rem;"></i>
+                    <h5 class="text-white mb-2" style="font-weight: 700;">Secure Checkout</h5>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">256-bit encrypted transactions</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="fas fa-bolt icon-gradient mb-3" style="font-size: 2.5rem;"></i>
+                    <h5 class="text-white mb-2" style="font-weight: 700;">Lightning Delivery</h5>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">2-5 business days nationwide</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="fas fa-undo icon-gradient mb-3" style="font-size: 2.5rem;"></i>
+                    <h5 class="text-white mb-2" style="font-weight: 700;">Easy Returns</h5>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">30-day hassle-free policy</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Prevent negative quantities
+document.querySelectorAll('input[name="quantity"]').forEach(input => {
+    input.addEventListener('change', function() {
+        if (parseInt(this.value) < 1) {
+            this.value = 1;
+        }
+    });
+});
+</script>
+{% endblock %}

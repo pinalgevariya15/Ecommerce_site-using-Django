@@ -1,0 +1,344 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}My Wishlist - EcomHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Reusing your core glassmorphism variables for consistency */
+    :root {
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+        --neon-red: #ff2a5f;
+        --gradient-danger: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+    }
+
+    /* Glass Card Utilities */
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        border-radius: 24px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 242, 254, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 242, 254, 0.1);
+    }
+
+    /* Header & Heart Animation */
+    .wishlist-header {
+        padding: 4rem 2rem 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .heart-icon {
+        font-size: 3.5rem;
+        background: var(--gradient-danger);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        animation: pulseHeart 2s infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 8, 68, 0.5));
+        margin-bottom: 1rem;
+    }
+
+    @keyframes pulseHeart {
+        0% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 8, 68, 0.5)); }
+        50% { transform: scale(1.15); filter: drop-shadow(0 0 25px rgba(255, 8, 68, 0.8)); }
+        100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 8, 68, 0.5)); }
+    }
+
+    .neon-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Product Grid */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+
+    .product-img-wrap {
+        position: relative;
+        padding-top: 100%;
+        overflow: hidden;
+    }
+
+    .product-img-wrap img {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .glass-card:hover .product-img-wrap img {
+        transform: scale(1.1);
+    }
+
+    .product-details {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .product-title {
+        color: var(--text-main);
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .product-title:hover {
+        color: var(--neon-cyan);
+    }
+
+    .price-tag {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+    }
+
+    .btn-glow-cyan {
+        background: var(--gradient-primary);
+        color: white !important;
+        border: none;
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        font-weight: 600;
+        flex-grow: 1;
+        text-align: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-glow-cyan:hover {
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .btn-glass-danger {
+        background: rgba(255, 8, 68, 0.1);
+        color: #ff2a5f !important;
+        border: 1px solid rgba(255, 8, 68, 0.3);
+        padding: 0.8rem 1.2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-glass-danger:hover {
+        background: var(--gradient-danger);
+        color: white !important;
+        border-color: transparent;
+        box-shadow: 0 0 15px rgba(255, 8, 68, 0.4);
+        transform: translateY(-2px);
+    }
+
+    /* Empty State */
+    .empty-wishlist {
+        text-align: center;
+        padding: 5rem 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        color: rgba(255, 255, 255, 0.1);
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mb-5">
+    
+    <div class="wishlist-header">
+        <i class="fas fa-heart heart-icon"></i>
+        <h1 class="neon-title">Your Curated Picks</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem;">Items you love, saved for later.</p>
+    </div>
+
+    {% if items %}
+        <div class="product-grid">
+            {% for item in items %}
+                <div class="glass-card">
+                    <a href="{% url 'product_detail' item.product.slug %}" class="product-img-wrap d-block">
+                        {% if item.product.featured_image %}
+                            <img src="{{ item.product.featured_image.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop" alt="Placeholder">
+                        {% endif %}
+                        
+                        {% if item.product.discount_price %}
+                            <div style="position: absolute; top: 15px; left: 15px; background: var(--gradient-danger); color: white; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; z-index: 10;">
+                                Sale
+                            </div>
+                        {% endif %}
+                    </a>
+                    
+                    <div class="product-details">
+                        <a href="{% url 'product_detail' item.product.slug %}" class="product-title">
+                            {{ item.product.name|truncatechars:45 }}
+                        </a>
+                        
+                        <div class="price-tag mt-2">
+                            ₹{{ item.product.get_price }}
+                        </div>
+                        
+                        <div class="action-buttons">
+                            {% if item.product.in_stock %}
+                                <button class="btn-glow-cyan add-to-cart-btn" data-product-id="{{ item.product.id }}">
+                                    <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                                </button>
+                            {% else %}
+                                <button class="btn-glow-cyan" style="background: rgba(255,255,255,0.1); color: var(--text-muted) !important; cursor: not-allowed;" disabled>
+                                    Out of Stock
+                                </button>
+                            {% endif %}
+                            
+                            <a href="{% url 'remove_from_wishlist' item.id %}" class="btn-glass-danger" title="Remove from Wishlist">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="glass-card empty-wishlist">
+            <i class="far fa-heart empty-icon"></i>
+            <h2 class="text-white mb-3" style="font-weight: 700;">Your wishlist is looking a little empty</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Found something you like? Tap the heart icon on any product to save it here.</p>
+            <a href="{% url 'product_list' %}" class="btn-primary d-inline-flex align-items-center" style="padding: 1rem 2.5rem; border-radius: 50px;">
+                Start Exploring <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Attach click listeners to all "Add to Cart" buttons
+    const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+    addToCartBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            
+            // Add a visual loading/success effect to the button
+            const originalHtml = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            // Send the data to your Django backend
+            fetch('{% url "add_to_cart" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ product_id: productId, quantity: 1 })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.innerHTML = '<i class="fas fa-check me-2"></i> Added!';
+                    this.style.background = '#10b981'; // Turn green temporarily
+                    showNotification(data.message, 'success');
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        this.innerHTML = originalHtml;
+                        this.style.background = 'var(--gradient-primary)';
+                    }, 2000);
+                } else {
+                    this.innerHTML = originalHtml;
+                    showNotification(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                this.innerHTML = originalHtml;
+                showNotification("An error occurred. Please try again.", 'danger');
+            });
+        });
+    });
+});
+
+// Django CSRF token helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Glassmorphism notification popup
+function showNotification(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-dismissible fade show position-fixed top-0 end-0 m-4 shadow-lg`;
+    alertDiv.style.zIndex = '9999';
+    alertDiv.style.background = 'rgba(20, 20, 20, 0.85)';
+    alertDiv.style.backdropFilter = 'blur(10px)';
+    alertDiv.style.border = '1px solid rgba(255,255,255,0.1)';
+    alertDiv.style.color = '#fff';
+    alertDiv.style.borderLeft = type === 'success' ? '4px solid var(--neon-cyan)' : '4px solid #ff2a5f';
+    alertDiv.style.borderRadius = '12px';
+    
+    alertDiv.innerHTML = `
+        <div class="d-flex align-items-center pr-4">
+            <i class="fas ${type === 'success' ? 'fa-check-circle text-info' : 'fa-exclamation-circle'} me-3" style="color: ${type === 'success' ? 'var(--neon-cyan)' : '#ff2a5f'};"></i>
+            <span style="font-weight: 500;">${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

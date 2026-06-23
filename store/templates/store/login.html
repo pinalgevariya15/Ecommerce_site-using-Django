@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | EcomHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Layered Shades */
+            --shade-900: #0b0f19; /* Deepest background */
+            --shade-800: #151d2f; /* Card background */
+            --shade-700: #1e293b; /* Input background */
+            --shade-600: #334155; /* Borders */
+            
+            /* Text & Accents */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-start: #38bdf8;
+            --accent-end: #818cf8;
+            
+            /* Status Colors */
+            --error-bg: #4c1d24;
+            --error-text: #fda4af;
+            --success-bg: #064e3b;
+            --success-text: #34d399;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* "Change of Shades" Animated Background */
+        body {
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #050b14, #121026, #0d1a2d, #050b14);
+            background-size: 400% 400%;
+            animation: shiftShades 15s ease infinite;
+        }
+
+        @keyframes shiftShades {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-container {
+            /* Gradient shading on the card itself */
+            background: linear-gradient(145deg, var(--shade-800), #0f1524);
+            padding: 2.5rem 3rem;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .brand-logo {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        /* Gradient text for the 'Hub' part */
+        .brand-logo span {
+            background: linear-gradient(to right, var(--accent-start), var(--accent-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1.2rem;
+            background-color: var(--shade-700);
+            border: 1px solid var(--shade-600);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder {
+            color: #64748b;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-start);
+            background-color: var(--shade-800);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--accent-start);
+            text-decoration: none;
+            margin-top: -0.75rem;
+            margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: var(--accent-end);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(to right, var(--accent-start), var(--accent-end));
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(129, 140, 248, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .signup-link a {
+            color: var(--accent-end);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: var(--accent-start);
+        }
+
+        /* Django Messages Styling */
+        .messages {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .messages li {
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .messages .error {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid rgba(253, 164, 175, 0.2);
+        }
+        
+        .messages .success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="brand-logo">Ecom<span>Hub</span></div>
+        <div class="subtitle">Welcome back to the hub</div>
+
+        <!-- Django Messages Block -->
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Form routing to your Django URL -->
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <!-- Ensure you replace # with your actual password reset URL tag if you have one -->
+            <a href="#" class="forgot-password">Forgot password?</a>
+
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <div class="signup-link">
+            New to EcomHub? <a href="{% url 'register' %}">Create an account</a>
+        </div>
+    </div>
+
+</body>
+</html>

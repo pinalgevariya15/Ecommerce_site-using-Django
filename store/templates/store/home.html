@@ -1,0 +1,483 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}EcomHub - Next Gen Shopping{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        /* Ultra Modern Dark Theme */
+        --bg-main: #050505;
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --bg-glass: rgba(255, 255, 255, 0.03);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        
+        /* Vibrant Accents */
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+        
+        --text-primary: #ffffff;
+        --text-secondary: #a1a1aa;
+    }
+
+    body {
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+    }
+
+    /* GLASSMORPHISM UTILITIES */
+    .glass-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        border-radius: 24px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        overflow: hidden;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 242, 254, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 242, 254, 0.1);
+    }
+
+    /* 1. IMMERSIVE HERO SECTION */
+    .hero-container {
+        position: relative;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        border-radius: 32px;
+        margin: 2rem;
+        overflow: hidden;
+    }
+
+    .hero-bg {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        z-index: 1;
+        opacity: 0.6;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to right, #050505 10%, transparent 90%);
+        z-index: 2;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 3;
+        padding: 4rem;
+        max-width: 800px;
+    }
+
+    .text-gradient {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* 2. TRENDY BENTO BOX CATEGORIES */
+    .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+
+    /* Make the first category feature larger if on desktop */
+    @media (min-width: 992px) {
+        .bento-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+    }
+
+    .category-bento {
+        position: relative;
+        height: 100%;
+        min-height: 250px;
+        display: block;
+        text-decoration: none;
+    }
+
+    .category-bento img {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.7s ease;
+    }
+
+    .category-bento:hover img {
+        transform: scale(1.08);
+    }
+
+    .category-bento::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+    }
+
+    .category-info {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 2;
+    }
+
+    /* 3. SLEEK PRODUCT CARDS */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+    }
+
+    .product-img-wrap {
+        position: relative;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+        overflow: hidden;
+    }
+
+    .product-img-wrap img {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .glass-card:hover .product-img-wrap img {
+        transform: scale(1.1);
+    }
+
+    .product-details {
+        padding: 1.5rem;
+        position: relative;
+    }
+
+    .product-title {
+        color: var(--text-primary);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .product-title:hover {
+        color: var(--neon-cyan);
+    }
+
+    .price-tag {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-primary);
+    }
+
+    /* Floating Action Button for Cart */
+    .btn-float-cart {
+        position: absolute;
+        right: 20px;
+        bottom: 25px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    .glass-card:hover .btn-float-cart {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .btn-float-cart:hover {
+        box-shadow: 0 0 20px var(--neon-cyan);
+        transform: scale(1.1) !important;
+    }
+
+    /* Section Titles */
+    .neon-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        padding-left: 2rem;
+        margin: 3rem 0 1rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .neon-title::before {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 40px;
+        background: var(--gradient-primary);
+        border-radius: 10px;
+    }
+
+    /* Custom Buttons */
+    .btn-glow {
+        background: var(--gradient-primary);
+        color: white !important;
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-glow::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 50px;
+        background: var(--gradient-primary);
+        z-index: -1;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+        filter: blur(15px);
+    }
+
+    .btn-glow:hover::before {
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-container">
+    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Hero Background" class="hero-bg">
+    <div class="hero-overlay"></div>
+    
+    <div class="hero-content">
+        <h1 style="font-size: 4.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem;">
+            Discover the <br>
+            <span class="text-gradient">Next Generation</span>
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 1.3rem; margin-bottom: 2.5rem; max-width: 500px;">
+            Elevate your lifestyle with premium gear. Curated collections for the modern aesthetic.
+        </p>
+        <a href="{% url 'product_list' %}" class="btn-glow">
+            Explore Collection <i class="fas fa-arrow-right ms-3"></i>
+        </a>
+    </div>
+</section>
+
+<h2 class="neon-title">Shop by Vibe</h2>
+<div class="bento-grid">
+    {% for category in categories %}
+        <a href="{% url 'category_products' category.slug %}" class="glass-card category-bento bento-item">
+            {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+            {% else %}
+                {% if forloop.counter == 1 %}
+                    <img src="https://images.unsplash.com/photo-1550029402-226115b7c579?q=80&w=1000&auto=format&fit=crop" alt="Tech">
+                {% elif forloop.counter == 2 %}
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop" alt="Fashion">
+                {% elif forloop.counter == 3 %}
+                    <img src="https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?q=80&w=1000&auto=format&fit=crop" alt="Accessories">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?q=80&w=1000&auto=format&fit=crop" alt="Gaming">
+                {% endif %}
+            {% endif %}
+            
+            <div class="category-info">
+                <h3 style="color: white; font-weight: 800; font-size: 1.8rem; margin: 0;">{{ category.name }}</h3>
+                <span class="text-gradient" style="font-weight: 600; font-size: 1rem;">Explore {{ category.products.count }} items &rarr;</span>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+<h2 class="neon-title">Trending Now</h2>
+<div class="product-grid">
+    {% for product in featured_products %}
+        <div class="glass-card">
+            <a href="{% url 'product_detail' product.slug %}" class="product-img-wrap d-block">
+                {% if product.featured_image %}
+                    <img src="{{ product.featured_image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop" alt="Placeholder">
+                {% endif %}
+                
+                {% if product.discount_price %}
+                    <div style="position: absolute; top: 15px; left: 15px; background: var(--gradient-primary); color: white; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; z-index: 10;">
+                        -{{ product.discount_percentage }}%
+                    </div>
+                {% endif %}
+            </a>
+            
+            <div class="product-details">
+                <a href="{% url 'product_detail' product.slug %}" class="product-title">
+                    {{ product.name|truncatechars:40 }}
+                </a>
+                
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                    <span style="color: var(--neon-cyan); font-size: 0.9rem;">
+                        <i class="fas fa-star"></i> 5.0
+                    </span>
+                    <span style="color: var(--text-secondary); font-size: 0.85rem;">({{ product.total_reviews }} reviews)</span>
+                </div>
+                
+                <div class="mt-3">
+                    {% if product.discount_price %}
+                        <span class="price-tag">₹{{ product.discount_price }}</span>
+                        <span style="color: var(--text-secondary); text-decoration: line-through; font-size: 0.9rem; margin-left: 8px;">₹{{ product.price }}</span>
+                    {% else %}
+                        <span class="price-tag">₹{{ product.price }}</span>
+                    {% endif %}
+                </div>
+                
+                <button class="btn-float-cart add-to-cart-btn" data-product-id="{{ product.id }}" title="Add to Cart">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    {% empty %}
+        <div class="glass-card p-5 text-center w-100" style="grid-column: 1 / -1;">
+            <i class="fas fa-box-open mb-3 text-gradient" style="font-size: 3rem;"></i>
+            <h3 class="text-white">New drops coming soon.</h3>
+        </div>
+    {% endfor %}
+</div>
+
+<h2 class="neon-title mt-5">Fresh Drops</h2>
+<div class="product-grid mb-5">
+    {% for product in new_products %}
+        <div class="glass-card">
+            <a href="{% url 'product_detail' product.slug %}" class="product-img-wrap d-block">
+                {% if product.featured_image %}
+                    <img src="{{ product.featured_image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop" alt="Placeholder">
+                {% endif %}
+            </a>
+            
+            <div class="product-details">
+                <span class="badge mb-2" style="background: rgba(0, 242, 254, 0.2); color: var(--neon-cyan); border: 1px solid var(--neon-cyan);">NEW</span>
+                
+                <a href="{% url 'product_detail' product.slug %}" class="product-title">
+                    {{ product.name|truncatechars:40 }}
+                </a>
+                
+                <div class="mt-3">
+                    <span class="price-tag">₹{{ product.get_price }}</span>
+                </div>
+                
+                <button class="btn-float-cart add-to-cart-btn" data-product-id="{{ product.id }}" title="Add to Cart">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+    addToCartBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            addToCart(productId);
+            
+            // Add a cool animation to the button on click
+            this.innerHTML = '<i class="fas fa-check"></i>';
+            this.style.background = '#10b981';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-plus"></i>';
+                this.style.background = 'var(--gradient-primary)';
+            }, 2000);
+        });
+    });
+});
+
+function addToCart(productId) {
+    fetch('{% url "add_to_cart" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ product_id: productId, quantity: 1 })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification(data.message, 'success');
+        }
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function showNotification(message, type) {
+    const alertDiv = document.createElement('div');
+    // Sleek glassmorphism notification
+    alertDiv.className = `alert alert-dismissible fade show position-fixed top-0 end-0 m-4 shadow-lg`;
+    alertDiv.style.zIndex = '9999';
+    alertDiv.style.background = 'rgba(20, 20, 20, 0.85)';
+    alertDiv.style.backdropFilter = 'blur(10px)';
+    alertDiv.style.border = '1px solid rgba(255,255,255,0.1)';
+    alertDiv.style.color = '#fff';
+    alertDiv.style.borderLeft = type === 'success' ? '4px solid var(--neon-cyan)' : '4px solid #ef4444';
+    alertDiv.style.borderRadius = '12px';
+    
+    alertDiv.innerHTML = `
+        <div class="d-flex align-items-center pr-4">
+            <i class="fas ${type === 'success' ? 'fa-check-circle text-info' : 'fa-exclamation-circle text-danger'} me-3"></i>
+            <span style="font-weight: 500;">${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

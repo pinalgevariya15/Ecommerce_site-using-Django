@@ -1,0 +1,243 @@
+{% extends 'store/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block title %}{{ product.name }} - EcomHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-lg-5 mb-4">
+            <div class="card border-0">
+                <img src="{{ product.featured_image.url }}" class="card-img-top" 
+                     alt="{{ product.name }}" style="height: 500px; object-fit: cover;">
+            </div>
+            <!-- Additional Images -->
+            {% if product.images.all %}
+                <div class="row g-2 mt-2">
+                    {% for image in product.images.all %}
+                        <div class="col-3">
+                            <img src="{{ image.image.url }}" class="img-thumbnail" 
+                                 alt="{{ image.alt_text }}" style="cursor: pointer;">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Product Details -->
+        <div class="col-lg-7">
+            <h1 style="color: #1f2937; margin-bottom: 1rem;">{{ product.name }}</h1>
+            
+            <!-- Rating -->
+            <div class="mb-3">
+                <span style="color: #f59e0b;">
+                    {% for i in '12345'|make_list %}
+                        {% if i|add:"0" <= average_rating %}
+                            <i class="fas fa-star"></i>
+                        {% else %}
+                            <i class="fas fa-star" style="color: #d1d5db;"></i>
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                <span class="text-muted ms-2">
+                    {{ average_rating }} ({{ review_count }} reviews)
+                </span>
+            </div>
+            
+            <!-- Pricing -->
+            <div class="mb-4">
+                {% if product.discount_price %}
+                    <span class="h3 me-2" style="text-decoration: line-through; color: #9ca3af;">
+                        ₹{{ product.price }}
+                    </span>
+                    <span class="h2" style="color: #f59e0b; font-weight: 800;">
+                        ₹{{ product.discount_price }}
+                    </span>
+                    <span class="badge bg-danger ms-2">-{{ product.discount_percentage }}%</span>
+                {% else %}
+                    <span class="h2" style="color: #1f2937; font-weight: 800;">
+                        ₹{{ product.price }}
+                    </span>
+                {% endif %}
+            </div>
+            
+            <!-- Description -->
+            <div class="mb-4">
+                <h5 style="color: #1f2937;">Description</h5>
+                <p>{{ product.description }}</p>
+            </div>
+            
+            <!-- Stock Status -->
+            <div class="mb-4">
+                {% if product.in_stock %}
+                    <badge class="badge bg-success fs-6">
+                        <i class="fas fa-check-circle me-2"></i>In Stock
+                    </badge>
+                    <small class="text-muted ms-2">Only {{ product.stock }} left!</small>
+                {% else %}
+                    <badge class="badge bg-danger fs-6">Out of Stock</badge>
+                {% endif %}
+            </div>
+            
+            <!-- Add to Cart -->
+            <div class="mb-4 d-flex gap-2">
+                <input type="number" id="quantity" class="form-control" style="width: 100px;" 
+                       value="1" min="1" max="{{ product.stock }}">
+                <button class="btn btn-primary btn-lg flex-grow-1" onclick="addToCart('{{ product.id }}')">
+                    <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                </button>
+                <button class="btn btn-outline-primary btn-lg" 
+                        onclick="addToWishlist('{{ product.id }}')">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="card border-0 ">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <i class="fas fa-shipping-fast" style="font-size: 1.5rem; color: #f59e0b;"></i>
+                        <p class="mt-2 mb-0" style="font-size: 0.9rem;">Fast Delivery</p>
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-lock" style="font-size: 1.5rem; color: #f59e0b;"></i>
+                        <p class="mt-2 mb-0" style="font-size: 0.9rem;">Secure Payment</p>
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-undo" style="font-size: 1.5rem; color: #f59e0b;"></i>
+                        <p class="mt-2 mb-0" style="font-size: 0.9rem;">Easy Returns</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reviews Section -->
+    <div class="row mt-5">
+        <div class="col-lg-8">
+            <h3 style="color: #1f2937; font-weight: 800; margin-bottom: 2rem;">
+                Customer Reviews
+            </h3>
+            
+            {% if user.is_authenticated and can_review %}
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5>Write a Review</h5>
+                        <form method="post" action="{% url 'add_review' product.id %}">
+                            {% csrf_token %}
+                            {{ review_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% for review in reviews %}
+                <div class="card border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 style="color: #1f2937;">{{ review.user.get_full_name|default:review.user.username }}</h6>
+                                <span style="color: #f59e0b;">
+                                    {% for i in '12345'|make_list %}
+                                        {% if i|add:"0" <= review.rating %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="fas fa-star" style="color: #d1d5db;"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <small class="text-muted ms-2">{{ review.created_at|date:"M d, Y" }}</small>
+                            </div>
+                        </div>
+                        <h6 class="mt-2">{{ review.title }}</h6>
+                        <p>{{ review.comment }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Related Products -->
+        <div class="col-lg-4">
+            <h5 style="color: #1f2937; font-weight: 800; margin-bottom: 1rem;">Related Products</h5>
+            {% for related in related_products %}
+                <div class="card border-0 mb-3">
+                    <img src="{{ related.featured_image.url }}" class="card-img-top" alt="{{ related.name }}">
+                    <div class="card-body p-2">
+                        <h6 style="font-size: 0.9rem;">{{ related.name }}</h6>
+                        <p class="text-muted mb-0">₹{{ related.get_price }}</p>
+                        <a href="{% url 'product_detail' related.slug %}" class="btn btn-sm btn-primary mt-2">
+                            View
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function addToCart(productId) {
+    const quantity = document.getElementById('quantity').value;
+    fetch('{% url "add_to_cart" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: parseInt(quantity)
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            window.location.href = '{% url "view_cart" %}';
+        }
+    });
+}
+
+function addToWishlist(productId) {
+    {% if user.is_authenticated %}
+        fetch(`/wishlist/add/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            }
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message));
+    {% else %}
+        window.location.href = '{% url "login" %}';
+    {% endif %}
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}
