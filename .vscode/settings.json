@@ -1,0 +1,8 @@
+{
+  "python.analysis.extraPaths": [
+    "./ecommerce"
+  ],
+  "python.autoComplete.extraPaths": [
+    "./ecommerce"
+  ]
+}

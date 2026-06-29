@@ -1,0 +1,24 @@
+/* dashboard.css - Custom overrides for Django index dashboard layout */
+
+/* Clear default Django content-main properties to allow full-width CSS grid */
+#content-main {
+    float: none !important;
+    width: 100% !important;
+}
+
+#content-related {
+    float: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* Clear module backgrounds to inherit from custom_admin.css card structures */
+.dashboard .module table th, 
+.dashboard .module table td {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.dashboard .module table tr:last-child th,
+.dashboard .module table tr:last-child td {
+    border-bottom: none !important;
+}

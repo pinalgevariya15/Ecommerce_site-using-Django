@@ -1,0 +1,259 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Receipt - EcomHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-card: rgba(20, 20, 20, 0.6);
+        --border-glass: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-purple: #4facfe;
+        --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+        --success-glow: #10b981;
+    }
+
+    .bill-container {
+        max-width: 800px;
+        margin: 4rem auto;
+    }
+
+    .glass-receipt {
+        background: var(--bg-card);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid var(--border-glass);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Decorative top glow */
+    .glass-receipt::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .success-icon {
+        font-size: 4rem;
+        color: var(--success-glow);
+        text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        margin-bottom: 1.5rem;
+    }
+
+    .bill-header {
+        text-align: center;
+        border-bottom: 1px solid var(--border-glass);
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .bill-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .info-block h6 {
+        color: var(--text-muted);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-block p {
+        color: white;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    /* Bill Table */
+    .bill-table {
+        width: 100%;
+        color: white;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+    }
+
+    .bill-table th {
+        color: var(--text-muted);
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        border-bottom: 1px solid var(--border-glass);
+        padding: 1rem 0;
+        text-align: right;
+    }
+
+    .bill-table th:first-child { text-align: left; }
+
+    .bill-table td {
+        padding: 1.2rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        text-align: right;
+        font-family: 'Courier New', Courier, monospace; /* Monospaced for receipt feel */
+    }
+
+    .bill-table td:first-child { 
+        text-align: left; 
+        font-family: 'Inter', sans-serif;
+    }
+
+    .bill-totals {
+        width: 300px;
+        margin-left: auto;
+    }
+
+    .total-line {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        color: var(--text-muted);
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .total-final {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        margin-top: 0.5rem;
+        border-top: 2px dashed rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    .btn-outline-glow {
+        background: transparent;
+        color: var(--neon-cyan);
+        border: 1px solid var(--neon-cyan);
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-outline-glow:hover {
+        background: rgba(0, 242, 254, 0.1);
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+        color: white;
+    }
+
+    /* Print Styles to make the downloaded PDF look perfect */
+    @media print {
+        body { background: white; color: black; }
+        .glass-receipt {
+            box-shadow: none;
+            border: 1px solid #ccc;
+            background: white;
+            color: black;
+            backdrop-filter: none;
+        }
+        .info-block p, .bill-table, .total-final { color: black !important; }
+        .info-block h6, .bill-table th, .total-line { color: #555 !important; }
+        .glass-receipt::before { display: none; }
+        .btn-outline-glow, .navbar, .footer { display: none !important; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container bill-container">
+    <div class="glass-receipt">
+        
+        <div class="bill-header">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h1 style="color: white; font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem;">Order Confirmed!</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">Thank you for shopping with us, {{ request.user.first_name|default:request.user.username }}!</p>
+        </div>
+
+        <div class="bill-info-grid">
+            <div class="info-block">
+                <h6>Order Number</h6>
+                <p style="font-family: 'Courier New', Courier, monospace; color: var(--neon-cyan);">{{ order.order_number }}</p>
+            </div>
+            <div class="info-block text-end">
+                <h6>Date of Issue</h6>
+                <p>{{ order.created_at|date:"F d, Y" }}</p>
+            </div>
+            <div class="info-block">
+                <h6>Shipping To</h6>
+                <p>{{ order.shipping_address|linebreaksbr }}</p>
+            </div>
+            <div class="info-block text-end">
+                <h6>Payment Method</h6>
+                <p>
+                    {{ order.payment_method }}
+                    {% if order.payment_status == 'completed' %}
+                        <span class="badge bg-success ms-2">PAID</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark ms-2">PENDING</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <table class="bill-table">
+            <thead>
+                <tr>
+                    <th>Item Description</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 600;">{{ item.product.name }}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">SKU: {{ item.product.sku }}</div>
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price|floatformat:2 }}</td>
+                    <td style="color: white; font-weight: 600;">₹{{ item.get_total|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="bill-totals">
+            <div class="total-line">
+                <span>Subtotal</span>
+                <span>₹{{ order.subtotal|floatformat:2 }}</span>
+            </div>
+            <div class="total-line">
+                <span>Tax (10%)</span>
+                <span>₹{{ order.tax|floatformat:2 }}</span>
+            </div>
+            <div class="total-line">
+                <span>Shipping</span>
+                <span>₹{{ order.shipping_cost|floatformat:2 }}</span>
+            </div>
+            <div class="total-final">
+                <span>Total</span>
+                <span style="color: var(--neon-cyan);">₹{{ order.total_amount|floatformat:2 }}</span>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 d-flex gap-3 justify-content-center">
+            <button onclick="window.print()" class="btn-outline-glow">
+                <i class="fas fa-file-pdf me-2"></i> Save / Print PDF
+            </button>
+            <a href="{% url 'home' %}" class="btn-outline-glow" style="border-color: rgba(255,255,255,0.2); color: white;">
+                Continue Shopping
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
