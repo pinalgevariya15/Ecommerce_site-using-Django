@@ -6073,3 +6073,134 @@ INFO 2026-06-23 11:02:38,334 runserver 29900 19644 [mHTTP GET /admin/store/user
 INFO 2026-06-23 11:02:38,493 runserver 29900 19644 [mHTTP GET /admin/jsi18n/ 200 [0.04, 127.0.0.1:37340][0m
 INFO 2026-06-23 11:02:44,875 runserver 29900 19644 [mHTTP GET /admin/store/wishlist/ 200 [0.10, 127.0.0.1:37340][0m
 INFO 2026-06-23 11:02:45,041 runserver 29900 19644 [mHTTP GET /admin/jsi18n/ 200 [0.05, 127.0.0.1:37340][0m
+INFO 2026-06-26 17:06:59,482 autoreload 5416 21264 Watching for file changes with StatReloader
+INFO 2026-06-26 17:07:10,733 runserver 5416 20192 [mHTTP GET / 200 [0.56, 127.0.0.1:48178][0m
+INFO 2026-06-26 17:07:10,891 runserver 5416 20192 [36mHTTP GET /media/categories/accessories_S8BkUf1.webp 304 [0.07, 127.0.0.1:48178][0m
+INFO 2026-06-26 17:07:10,902 runserver 5416 20192 [36mHTTP GET /media/categories/beauty_VCraZY5.webp 304 [0.08, 127.0.0.1:65175][0m
+INFO 2026-06-26 17:07:10,906 runserver 5416 20192 [36mHTTP GET /media/categories/womenswear_7jzOJeV.webp 304 [0.07, 127.0.0.1:32800][0m
+INFO 2026-06-26 17:07:10,911 runserver 5416 20192 [36mHTTP GET /media/categories/menswear_GtZwPdb.webp 304 [0.08, 127.0.0.1:34163][0m
+INFO 2026-06-26 17:07:10,913 runserver 5416 20192 [36mHTTP GET /media/categories/footwear_OgA30AB.webp 304 [0.08, 127.0.0.1:49855][0m
+INFO 2026-06-26 17:07:10,915 runserver 5416 20192 [36mHTTP GET /media/products/MOKOBARA.jpg 304 [0.08, 127.0.0.1:36180][0m
+INFO 2026-06-26 17:07:10,984 runserver 5416 20192 [36mHTTP GET /media/products/purse.jpg 304 [0.09, 127.0.0.1:48178][0m
+INFO 2026-06-26 17:07:10,996 runserver 5416 20192 [36mHTTP GET /media/products/beauty1.jpg 304 [0.09, 127.0.0.1:65175][0m
+INFO 2026-06-26 17:07:11,000 runserver 5416 20192 [36mHTTP GET /media/products/child1.avif 304 [0.08, 127.0.0.1:32800][0m
+INFO 2026-06-26 17:07:11,010 runserver 5416 20192 [36mHTTP GET /media/products/w2.avif 304 [0.07, 127.0.0.1:36180][0m
+INFO 2026-06-26 17:07:11,012 runserver 5416 20192 [36mHTTP GET /media/products/w3.avif 304 [0.08, 127.0.0.1:34163][0m
+INFO 2026-06-26 17:07:11,016 runserver 5416 20192 [36mHTTP GET /media/products/w1.avif 304 [0.08, 127.0.0.1:49855][0m
+INFO 2026-06-26 17:07:11,039 runserver 5416 20192 [36mHTTP GET /media/products/M-t_shirt1.avif 304 [0.05, 127.0.0.1:48178][0m
+WARNING 2026-06-26 17:07:11,123 log 5416 7048 Not Found: /favicon.ico
+WARNING 2026-06-26 17:07:11,125 runserver 5416 20192 [33mHTTP GET /favicon.ico 404 [0.06, 127.0.0.1:48178][0m
+INFO 2026-06-26 17:07:15,959 runserver 5416 20192 [mHTTP GET /wishlist/ 200 [0.25, 127.0.0.1:48178][0m
+INFO 2026-06-26 17:07:18,695 runserver 5416 20192 [mHTTP GET /products/ 200 [0.41, 127.0.0.1:48178][0m
+INFO 2026-06-26 17:10:14,049 autoreload 5416 21264 E:\ecommerce_project\ecommerce\store\views.py changed, reloading.
+INFO 2026-06-26 17:10:15,583 autoreload 16556 18740 Watching for file changes with StatReloader
+INFO 2026-06-26 17:10:18,259 autoreload 16556 18740 E:\ecommerce_project\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-06-26 17:10:19,481 autoreload 9028 13340 Watching for file changes with StatReloader
+INFO 2026-06-26 17:14:01,587 runserver 9028 7464 [mHTTP GET /products/ 200 [0.36, 127.0.0.1:12957][0m
+INFO 2026-06-26 17:14:10,470 runserver 9028 7464 [mHTTP GET /wishlist/ 200 [0.07, 127.0.0.1:12957][0m
+INFO 2026-06-26 17:14:12,241 runserver 9028 7464 [mHTTP GET /products/ 200 [0.30, 127.0.0.1:12957][0m
+INFO 2026-06-26 17:14:25,522 runserver 9028 7464 [mHTTP GET /product/lakme-9-to-5-cc-cream/ 200 [0.44, 127.0.0.1:12957][0m
+INFO 2026-06-26 17:14:25,810 runserver 9028 7464 [mHTTP GET /media/products/beauty1_AXOrNDV.jpg 200 [0.17, 127.0.0.1:12957][0m
+INFO 2026-06-26 17:14:36,545 runserver 9028 7464 [mHTTP GET /orders/ 200 [0.08, 127.0.0.1:12957][0m
+INFO 2026-06-26 17:14:38,878 runserver 9028 7464 [mHTTP GET /products/ 200 [0.09, 127.0.0.1:12957][0m
+INFO 2026-06-26 17:15:13,994 runserver 9028 7464 [mHTTP GET / 200 [0.06, 127.0.0.1:48362][0m
+INFO 2026-06-26 17:15:14,097 runserver 9028 7464 [36mHTTP GET /media/categories/accessories_S8BkUf1.webp 304 [0.03, 127.0.0.1:48362][0m
+INFO 2026-06-26 17:15:14,108 runserver 9028 7464 [36mHTTP GET /media/categories/beauty_VCraZY5.webp 304 [0.04, 127.0.0.1:65196][0m
+INFO 2026-06-26 17:15:14,111 runserver 9028 7464 [36mHTTP GET /media/categories/footwear_OgA30AB.webp 304 [0.04, 127.0.0.1:45159][0m
+INFO 2026-06-26 17:15:14,114 runserver 9028 7464 [36mHTTP GET /media/categories/menswear_GtZwPdb.webp 304 [0.04, 127.0.0.1:62490][0m
+INFO 2026-06-26 17:15:14,124 runserver 9028 7464 [36mHTTP GET /media/products/MOKOBARA.jpg 304 [0.04, 127.0.0.1:40747][0m
+INFO 2026-06-26 17:15:14,124 runserver 9028 7464 [36mHTTP GET /media/categories/womenswear_7jzOJeV.webp 304 [0.04, 127.0.0.1:30276][0m
+INFO 2026-06-26 17:15:14,154 runserver 9028 7464 [36mHTTP GET /media/products/purse.jpg 304 [0.05, 127.0.0.1:48362][0m
+INFO 2026-06-26 17:15:14,163 runserver 9028 7464 [36mHTTP GET /media/products/child1.avif 304 [0.05, 127.0.0.1:65196][0m
+INFO 2026-06-26 17:15:14,164 runserver 9028 7464 [36mHTTP GET /media/products/beauty1.jpg 304 [0.05, 127.0.0.1:45159][0m
+INFO 2026-06-26 17:15:14,165 runserver 9028 7464 [36mHTTP GET /media/products/w3.avif 304 [0.04, 127.0.0.1:62490][0m
+INFO 2026-06-26 17:15:14,172 runserver 9028 7464 [36mHTTP GET /media/products/w1.avif 304 [0.04, 127.0.0.1:30276][0m
+INFO 2026-06-26 17:15:14,173 runserver 9028 7464 [36mHTTP GET /media/products/w2.avif 304 [0.04, 127.0.0.1:40747][0m
+INFO 2026-06-26 17:15:14,182 runserver 9028 7464 [36mHTTP GET /media/products/M-t_shirt1.avif 304 [0.02, 127.0.0.1:48362][0m
+WARNING 2026-06-26 17:15:14,358 log 9028 26056 Not Found: /favicon.ico
+WARNING 2026-06-26 17:15:14,360 runserver 9028 7464 [33mHTTP GET /favicon.ico 404 [0.02, 127.0.0.1:48362][0m
+INFO 2026-06-26 17:15:35,877 runserver 9028 7464 [mHTTP GET /register/ 200 [0.03, 127.0.0.1:48362][0m
+INFO 2026-06-26 17:17:06,388 runserver 9028 7464 [32mHTTP POST /register/ 302 [0.03, 127.0.0.1:32191][0m
+INFO 2026-06-26 17:17:06,410 runserver 9028 7464 [mHTTP GET /register/ 200 [0.02, 127.0.0.1:32191][0m
+INFO 2026-06-26 17:17:10,267 runserver 9028 7464 [mHTTP GET /register/ 200 [0.03, 127.0.0.1:32191][0m
+INFO 2026-06-26 17:17:47,261 runserver 9028 7464 [32mHTTP POST /register/ 302 [0.02, 127.0.0.1:32191][0m
+INFO 2026-06-26 17:17:47,291 runserver 9028 7464 [mHTTP GET /register/ 200 [0.02, 127.0.0.1:32191][0m
+INFO 2026-06-26 17:17:51,995 runserver 9028 7464 [mHTTP GET /register/ 200 [0.02, 127.0.0.1:32191][0m
+INFO 2026-06-26 17:18:40,150 runserver 9028 7464 [mHTTP GET /register/ 200 [0.03, 127.0.0.1:32191][0m
+INFO 2026-06-26 17:19:54,981 runserver 9028 7464 [mHTTP GET /products/ 200 [0.25, 127.0.0.1:45234][0m
+INFO 2026-06-26 17:19:58,545 runserver 9028 7464 [mHTTP GET /products/ 200 [0.18, 127.0.0.1:3132][0m
+INFO 2026-06-26 17:21:27,595 autoreload 9028 13340 E:\ecommerce_project\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-06-26 17:21:30,640 autoreload 20208 23196 Watching for file changes with StatReloader
+INFO 2026-06-26 17:21:34,632 autoreload 20208 23196 E:\ecommerce_project\ecommerce\store\views.py changed, reloading.
+INFO 2026-06-26 17:21:36,502 autoreload 11084 7572 Watching for file changes with StatReloader
+INFO 2026-06-26 17:22:56,320 runserver 11084 21120 [mHTTP GET /products/ 200 [0.27, 127.0.0.1:20184][0m
+INFO 2026-06-26 17:22:58,344 runserver 11084 21120 [mHTTP GET / 200 [0.12, 127.0.0.1:20184][0m
+INFO 2026-06-26 17:23:02,756 runserver 11084 21120 [mHTTP GET /products/ 200 [0.30, 127.0.0.1:20184][0m
+INFO 2026-06-26 17:23:04,961 runserver 11084 21120 [mHTTP GET /wishlist/ 200 [0.07, 127.0.0.1:20184][0m
+INFO 2026-06-26 17:47:06,296 autoreload 24932 19364 Watching for file changes with StatReloader
+INFO 2026-06-26 17:47:44,973 runserver 24932 25656 [mHTTP GET / 200 [0.21, 127.0.0.1:39668][0m
+WARNING 2026-06-26 17:47:45,198 log 24932 25244 Not Found: /favicon.ico
+WARNING 2026-06-26 17:47:45,201 runserver 24932 25656 [33mHTTP GET /favicon.ico 404 [0.04, 127.0.0.1:39668][0m
+INFO 2026-06-26 17:47:51,168 runserver 24932 25656 [mHTTP GET / 200 [0.04, 127.0.0.1:39668][0m
+WARNING 2026-06-26 17:50:18,073 log 24932 25244 Not Found: /api/users/
+WARNING 2026-06-26 17:50:18,075 runserver 24932 25656 [33mHTTP GET /api/users/ 404 [0.02, 127.0.0.1:49947][0m
+INFO 2026-06-27 17:24:17,610 autoreload 18568 12164 Watching for file changes with StatReloader
+INFO 2026-06-27 17:24:43,758 runserver 18568 21780 [mHTTP GET / 200 [0.54, 127.0.0.1:38830][0m
+INFO 2026-06-27 17:24:45,012 runserver 18568 21780 [mHTTP GET /media/categories/accessories_S8BkUf1.webp 200 [1.22, 127.0.0.1:38830][0m
+INFO 2026-06-27 17:24:45,082 runserver 18568 21780 [mHTTP GET /media/categories/menswear_GtZwPdb.webp 200 [1.24, 127.0.0.1:49381][0m
+INFO 2026-06-27 17:24:45,126 runserver 18568 21780 [mHTTP GET /media/products/purse.jpg 200 [0.10, 127.0.0.1:38830][0m
+INFO 2026-06-27 17:24:45,128 runserver 18568 21780 [mHTTP GET /media/categories/footwear_OgA30AB.webp 200 [1.30, 127.0.0.1:63756][0m
+INFO 2026-06-27 17:24:45,161 runserver 18568 21780 [mHTTP GET /media/products/MOKOBARA.jpg 200 [1.31, 127.0.0.1:49776][0m
+INFO 2026-06-27 17:24:45,189 runserver 18568 21780 [mHTTP GET /media/categories/womenswear_7jzOJeV.webp 200 [1.33, 127.0.0.1:37153][0m
+INFO 2026-06-27 17:24:45,196 runserver 18568 21780 [mHTTP GET /media/categories/beauty_VCraZY5.webp 200 [1.38, 127.0.0.1:38368][0m
+INFO 2026-06-27 17:24:45,256 runserver 18568 21780 [mHTTP GET /media/products/beauty1.jpg 200 [0.16, 127.0.0.1:49381][0m
+INFO 2026-06-27 17:24:45,299 runserver 18568 21780 [mHTTP GET /media/products/child1.avif 200 [0.16, 127.0.0.1:63756][0m
+INFO 2026-06-27 17:24:45,315 runserver 18568 21780 [mHTTP GET /media/products/w3.avif 200 [0.16, 127.0.0.1:38830][0m
+INFO 2026-06-27 17:24:45,327 runserver 18568 21780 [mHTTP GET /media/products/w2.avif 200 [0.15, 127.0.0.1:49776][0m
+INFO 2026-06-27 17:24:45,355 runserver 18568 21780 [mHTTP GET /media/products/w1.avif 200 [0.15, 127.0.0.1:37153][0m
+INFO 2026-06-27 17:24:45,357 runserver 18568 21780 [mHTTP GET /media/products/M-t_shirt1.avif 200 [0.14, 127.0.0.1:38368][0m
+WARNING 2026-06-27 17:24:45,495 log 18568 19828 Not Found: /favicon.ico
+WARNING 2026-06-27 17:24:45,498 runserver 18568 21780 [33mHTTP GET /favicon.ico 404 [0.11, 127.0.0.1:38368][0m
+INFO 2026-06-27 17:24:48,623 runserver 18568 21780 [mHTTP GET /products/ 200 [0.34, 127.0.0.1:38368][0m
+WARNING 2026-06-27 17:25:03,193 log 18568 19828 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 17:25:03,195 runserver 18568 21780 [33mHTTP GET /.well-known/appspecific/com.chrome.devtools.json 404 [0.03, 127.0.0.1:38368][0m
+INFO 2026-06-27 17:25:21,821 runserver 18568 21780 [mHTTP GET / 200 [0.15, 127.0.0.1:56886][0m
+INFO 2026-06-27 17:25:21,985 runserver 18568 21780 [mHTTP GET / 200 [0.15, 127.0.0.1:20499][0m
+INFO 2026-06-27 17:25:22,137 runserver 18568 21780 [mHTTP GET / 200 [0.14, 127.0.0.1:56886][0m
+INFO 2026-06-27 17:25:22,290 runserver 18568 21780 [mHTTP GET / 200 [0.14, 127.0.0.1:20499][0m
+INFO 2026-06-27 17:25:22,425 runserver 18568 21780 [mHTTP GET / 200 [0.13, 127.0.0.1:56886][0m
+WARNING 2026-06-27 17:25:22,590 log 18568 19828 Not Found: /favicon.ico
+WARNING 2026-06-27 17:25:22,594 runserver 18568 21780 [33mHTTP GET /favicon.ico 404 [0.11, 127.0.0.1:5926][0m
+INFO 2026-06-27 17:25:22,604 runserver 18568 21780 [mHTTP GET / 200 [0.17, 127.0.0.1:20499][0m
+INFO 2026-06-27 17:25:22,772 runserver 18568 21780 [mHTTP GET / 200 [0.16, 127.0.0.1:56886][0m
+INFO 2026-06-27 17:25:22,910 runserver 18568 21780 [mHTTP GET / 200 [0.13, 127.0.0.1:20499][0m
+WARNING 2026-06-27 17:25:23,049 log 18568 19828 Not Found: /favicon.ico
+WARNING 2026-06-27 17:25:23,052 runserver 18568 21780 [33mHTTP GET /favicon.ico 404 [0.10, 127.0.0.1:5926][0m
+INFO 2026-06-27 17:25:23,073 runserver 18568 21780 [mHTTP GET / 200 [0.16, 127.0.0.1:56886][0m
+INFO 2026-06-27 17:25:23,223 runserver 18568 21780 [mHTTP GET / 200 [0.15, 127.0.0.1:20499][0m
+INFO 2026-06-27 17:28:15,403 runserver 18568 21780 [mHTTP GET /products/?rating=5 200 [0.08, 127.0.0.1:47608][0m
+INFO 2026-06-27 17:28:18,050 runserver 18568 21780 [mHTTP GET /products/?rating=1 200 [0.07, 127.0.0.1:47608][0m
+INFO 2026-06-27 17:28:25,976 runserver 18568 21780 [mHTTP GET /products/ 200 [0.19, 127.0.0.1:47608][0m
+WARNING 2026-06-27 17:29:41,360 log 18568 19828 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 17:29:41,363 runserver 18568 21780 [33mHTTP GET /.well-known/appspecific/com.chrome.devtools.json 404 [0.05, 127.0.0.1:62307][0m
+INFO 2026-06-27 17:29:45,919 runserver 18568 21780 [mHTTP GET /products/ 200 [0.21, 127.0.0.1:62307][0m
+WARNING 2026-06-27 17:29:46,048 log 18568 19828 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 17:29:46,050 runserver 18568 21780 [33mHTTP GET /.well-known/appspecific/com.chrome.devtools.json 404 [0.04, 127.0.0.1:62307][0m
+INFO 2026-06-27 17:30:39,344 runserver 18568 21780 [mHTTP GET /products/ 200 [0.17, 127.0.0.1:62307][0m
+WARNING 2026-06-27 17:30:39,421 log 18568 19828 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 17:30:39,423 runserver 18568 21780 [33mHTTP GET /.well-known/appspecific/com.chrome.devtools.json 404 [0.03, 127.0.0.1:62307][0m
+INFO 2026-06-27 17:30:50,421 runserver 18568 21780 [mHTTP GET /products/ 200 [0.21, 127.0.0.1:62307][0m
+WARNING 2026-06-27 17:30:50,573 log 18568 19828 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 17:30:50,578 runserver 18568 21780 [33mHTTP GET /.well-known/appspecific/com.chrome.devtools.json 404 [0.04, 127.0.0.1:62307][0m
+WARNING 2026-06-27 17:40:58,599 log 18568 19828 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 17:40:58,601 runserver 18568 21780 [33mHTTP GET /.well-known/appspecific/com.chrome.devtools.json 404 [0.03, 127.0.0.1:54085][0m
+INFO 2026-06-27 17:41:06,173 runserver 18568 21780 [mHTTP GET /products/ 200 [0.21, 127.0.0.1:54085][0m
+WARNING 2026-06-27 17:41:06,320 log 18568 19828 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 17:41:06,323 runserver 18568 21780 [33mHTTP GET /.well-known/appspecific/com.chrome.devtools.json 404 [0.04, 127.0.0.1:54085][0m
+INFO 2026-06-29 16:06:34,331 autoreload 10520 12692 Watching for file changes with StatReloader
+INFO 2026-06-29 16:06:38,019 runserver 10520 3508 [mHTTP GET / 200 [0.39, 127.0.0.1:43508][0m
+WARNING 2026-06-29 16:06:38,511 log 10520 20504 Not Found: /favicon.ico
+WARNING 2026-06-29 16:06:38,514 runserver 10520 3508 [33mHTTP GET /favicon.ico 404 [0.10, 127.0.0.1:43508][0m
+INFO 2026-06-29 16:08:13,793 runserver 10520 3508 [mHTTP GET /products/ 200 [0.21, 127.0.0.1:39354][0m
+INFO 2026-06-29 16:32:30,563 autoreload 10520 12692 E:\ecommerce_project\ecommerce\store\views.py changed, reloading.
+INFO 2026-06-29 16:32:32,693 autoreload 14120 25704 Watching for file changes with StatReloader

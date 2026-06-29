@@ -10,11 +10,11 @@ from django.views.decorators.http import require_POST
 import json
 from decimal import Decimal
 
-from .models import (
+from store.models import (
     Product, Category, Cart, CartItem, Order, OrderItem,
     Review, Wishlist, WishlistItem, UserProfile, Coupon
 )
-from .forms import ProductReviewForm, CheckoutForm, UserRegistrationForm
+from store.forms import ProductReviewForm, CheckoutForm, UserRegistrationForm
 
 
 # ==================== HOME & BROWSE ====================
